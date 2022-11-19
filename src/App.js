@@ -4,20 +4,22 @@ import {
   InputBoxCon,
   Input,
   InputBox,
+  BlockchainStatus,
   InputBoxItems,
 } from "./components/AppElements";
 import Web3 from "web3";
 import { changeStateInput } from "./abi/abis";
+import { Grid } from "react-loader-spinner";
 // Truffle Outputs post-migration process
- const web3 = new Web3(Web3.givenProvider);
- const contractAddr = "0x8a6232679ACD74cEcE204Ea0011770fe";
- const ChangeState = new web3.eth.Contract(changeStateInput, contractAddr);
+const web3 = new Web3(Web3.givenProvider);
+const contractAddr = "0x8a6232679ACD74cEcE204Ea0011770fe";
+const ChangeState = new web3.eth.Contract(changeStateInput, contractAddr);
 
 function App() {
- 
   // Hooks here
   const [state, setState] = useState(0);
   const [getState, setGetState] = useState("Click to refresh");
+  const [promiseFulfilled, setPromiseFulfilled] = useState(false);
   // Check if a web3 address is running on port :9545
   const web3Check = new Web3();
   web3Check.setProvider(
@@ -26,7 +28,12 @@ function App() {
   web3Check.eth.net
     .isListening()
     .then(() => console.log("Successful Connection!"))
-    .catch((e) => console.log("Error: " + e));
+    .catch((e) => console.log("Error: "));
+
+  const web3CheckPromise = web3Check.eth.net
+    .isListening()
+    .then(() => console.log(web3Check._provider.url.slice(-4)))
+    .then(() => setPromiseFulfilled(9545));
   // Read and get data from our local blockchain
   const handleGet = async (e) => {
     e.preventDefault();
@@ -53,6 +60,17 @@ function App() {
       </header>
       <InputBoxCon>
         <InputBox>
+          <BlockchainStatus>
+            {promiseFulfilled === 9545 ? (
+              <Grid
+                ariaLabel="loading-indicator"
+                color="aliceblue"
+                height="30px"
+              />
+            ) : (
+              <Grid ariaLabel="loading-indicator" color="red" height="30px" />
+            )}
+          </BlockchainStatus>
           <InputBoxItems>
             <h1> State Change dApp</h1>
             <form onSubmit={handleSet}>

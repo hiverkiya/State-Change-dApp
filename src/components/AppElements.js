@@ -26,3 +26,12 @@ export const Input = styled.input`
   width: 150px;
   margin-bottom: 10px;
 `;
+export const BlockchainStatus = styled.div`
+  float: right;
+  right: 0;
+  bottom: 0;
+  margin-bottom: 20px;
+  position: absolute;
+  margin-right: 0px;
+  fill: aliceblue;
+`;
